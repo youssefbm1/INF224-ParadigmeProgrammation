@@ -1,0 +1,33 @@
+______________________________ Reponses partie c++ _____
+﻿_____ Question 4 _____
+  - Il s'agit d'une méthode abstraite ou virtuelle pure déclarée dans le .h comme "virtual" et avec l'indication " = 0 ".
+  - On ne peut plus instancier la classe de base (ici Multimedia) car il s'agit d'une classe abstraite qui ne peut être instanciée car elle contient la méthode virtuelle pure playMedia().
+
+_____ Question 5 _____
+		- On veut pouvoir traiter de façon générique des classes dérivant d'une classe de base; La propriété de l'orienté objet qui nous permettra de faire cela est le polymorphisme. Il permet de définir plusieurs comportement au même objet ici les éléments du vector<Mltimedia> pointant sur des objets de type réellement différents (des "Video"s et des "Photo"s) et selon l'objet pointé les méthodes playMedia() et Describe() ont des comportements différents.
+  - Afin de pouvoir utiliser le polymorphisme en C++ on doit utiliser des pointeurs (ou des références) et le mot-clé "virtual".
+  - C'est pour cela que le vector créé contient des pointeurs vers les objets (Multimedia*) et non pas les objets eux-mêmes.
+  - L'utilisation des objets eux-mêmes ne permet pas la résolution  dynamique et le compilateur ne saurait à quel type d'objet Multimedia il a affaire d'où la nécessité des pointeurs.
+  - Dans java, le polymorphisme fonctionne si on déclarait un tableau d'objets parceque java fait abstraction des manipulations que l'on a à faire en c++ et il travaille en interne avec des références.
+
+_____ Question 6 _____
+  - La première chose à faire est de mettre les attributs de Film à private (ou protected).
+  Dans le cas de chaptersDurations cela n'est pas suffisant car l'appelant des deux méthodes, set et get, détiendra un pointeur vers le tableau des chapitres et pourra altérer le contenu de ce dernier à tout moment; La classe film perdra le contrôle de ses attributs.
+Donc, Pour le modifieur "setter" on doit non pas affecter à chaptersDurations le tableau (pointeur) tel qu'il est mais en faire une copie propre à l'objet et l'affecter à chaptersDurations.
+  - Pour l'accesseur on pourrait rajouter le mot-clé const à la signature de la méthode pour empêcher l'altération du contenu pointé par le pointeur retourné et donc l'altération inadéquate du tableau chaptersDurations mais cela ne résout pas le problème de suppression du tableau(même avec le const le code appelant pourra supprimer le tableau bien qu'il ne puisse pas l'altérer). On devrait donc retourner une copie du tableau chaptersDurations.
+
+_____ Question 7 _____
+  - La mémoire qui n'est pas gérée automatiquement par c++ est la mémoire dynamique (ie le tas, la mémoire allouée par new). Ce sont donc les classes où on a utilisé ce mot-clé qui doivent être modifiées pour empêcher les fuites de mémoire. Notamment, la classe Film. La classe Film a, donc, besoin d'un destructeur qui libérera la mémoire allouée avant la destruction de l'objet.
+  - Dans certains cas la copie d'objets pose problème. Eventuellement quand l'objet possède un pointeur comme attribut dans ce cas la valeur qui est réellement d'intérêt et devrait être propre à chaque objet est le pointé mais lors de la copie c'est seulement le pointeur qui est copié et le pointé devient partagé par les deux instances. Dans ce cas, il faudrait empêcher la copie d'objets sinon la gérer en modifiant la fonction de copie et l'opérateur =. 
+  En effet, dans notre cas, la classe "Film" a un attribut qui est un pointeur (chaptersDurations) vers un tableau d'entiers. La copie d'un objet Film produira un autre objet Film qui tous les deux pointent sur le même tableau de durée (chaptersDurations). Ici, on a choisi de modifier les deux méthodes.
+
+_____ Question 8 _____ 
+  - Dans l'implémentation de la classe Groupe, on hérite d'une list<Multimedia*> en utilisant des pointeurs et non des objets. Cela permet l'utilisation du polymorphisme sur les objets du groupe ce qui est le but ici. En fait, comme on avait remarqué à la question 5, afin de bénéficier du polymorphisme on doit utiliser les pointeurs.
+  - Dans java, on aurait créé une liste d'objets (et non de pointeurs) et le polymorphisme aurait fonctionné correctement puisque dans java ça aurait été en réalité des références gérées en interne.
+
+_____ Question 10 _____
+  - En c++, on pourrait faire usage du mot-clé friend. On pourrait rendre les constructeurs des classes gérées par le gestionnaire (ici la classe "Manager") privés et amis du "Manager". Ainsi, seul le "Manager" pourra appeler les constructeurs et il sera le seul à pouvoir instancier ses classes. D'où la gestion cohérente. (je n'ai pas implémenté cette idée par contre)
+
+_____ Question 11 _____
+  - Afin de pouvoir accéder aux données et méthodes du gestionnaire (la classe "Manager") depuis la méthode MyBase::processRequest(), la solution la plus simple et d’hériter de Manager dans MyBase. Ainsi, MyBase sera un manager et aura en même temps la méthode processRequest() et les autres méthodes implémentées dans Manager.
+
